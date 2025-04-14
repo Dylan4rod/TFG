@@ -1,0 +1,52 @@
+Design 
+ // An edge detector
+module day3 (
+  input     wire    clk,
+  input     wire    reset,
+input     wire    a_i,
+output    wire    rising_edge_o,
+  output    wire    falling_edge_o
+);
+logic a_ff;
+always_ff @(posedge clk or posedge reset)
+    if (reset)
+      a_ff <= 1'b0;
+    else
+      a_ff <= a_i;
+// Rising edge when delayed signal is 0 but current is 1
+  assign rising_edge_o = ~a_ff & a_i;
+// Falling edge when delayed signal is 1 but current is 0
+  assign falling_edge_o = a_ff & ~a_i;
+endmodule
+
+Testbench
+
+// Simple edge detector TB
+module day3_tb ();
+logic    clk;
+  logic    reset;
+logic    a_i;
+logic    rising_edge_o;
+  logic    falling_edge_o;
+day3 DAY3 (.*);
+// clk
+  always begin
+    clk = 1'b1;
+    #5;
+    clk = 1'b0;
+    #5;
+  end
+// Stimulus
+  initial begin
+    reset <= 1'b1;
+    a_i <= 1'b1;
+    @(posedge clk);
+    reset <= 1'b0;
+    @(posedge clk);
+    for (int i=0; i<32; i++) begin
+      a_i <= $random%2;
+      @(posedge clk);
+    end
+    $finish();
+  end
+endmodule

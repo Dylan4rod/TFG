@@ -1,0 +1,29 @@
+`include "constants.vams"
+`include "disciplines.vams"
+
+module edge_detector_rnm (
+  input  wreal a_i,                    // señal analógica en RNM (wreal)
+  input  logic clk, reset,             // reloj y reset digitales
+  output logic rising_edge_o,
+  output logic falling_edge_o
+);
+
+  real a_ff;  // almacena el valor anterior de la señal
+  real a_curr;
+  real threshold = 0.5;  // umbral para decidir si es '1' o '0'
+
+  always_ff @(posedge clk or posedge reset) begin
+    if (reset) begin
+      a_ff <= 0.0;
+    end else begin
+      a_curr = a_i;  // toma el valor actual del wreal
+      // Rising edge: antes < umbral, ahora ≥ umbral
+      rising_edge_o  <= (a_ff < threshold) && (a_curr >= threshold);
+      // Falling edge: antes ≥ umbral, ahora < umbral
+      falling_edge_o <= (a_ff >= threshold) && (a_curr < threshold);
+      a_ff <= a_curr;  // actualiza el valor anterior
+    end
+  end
+
+endmodule
+
