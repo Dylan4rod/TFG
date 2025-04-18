@@ -1,5 +1,5 @@
-timescale 1ns/1ps 
-include "disciplines.h
+`timescale 1ns/1ps
+`include "disciplines.vams"
 
 module detector_flancos_rnm(
   input  wreal a_in, 
@@ -11,23 +11,23 @@ module detector_flancos_rnm(
   real rising_edge_int; 
   real falling_edge_int;
 
-// Logica de detección de flancos 
-always @(a_in) begin
-  if ((a_prev < 0.5) && (a_in > 0.5)) 
-    rising_edge_int = 1.0:
-  else 
-    rising_edge_int = 0.0;
+  // Lógica de detección de flancos
+  always @(a_in) begin
+    if ((a_prev < 0.5) && (a_in > 0.5)) 
+      rising_edge_int = 1.0;
+    else 
+      rising_edge_int = 0.0;
 
-  if ((a_prev > 0.5) && (a_in < 0.5)) 
-    falling_edge_int = 1.0;
-  else 
-    falling_edge_int = 0.0;
+    if ((a_prev > 0.5) && (a_in < 0.5)) 
+      falling_edge_int = 1.0;
+    else 
+      falling_edge_int = 0.0;
 
-  a_prev = a_in;
-end
+    a_prev = a_in;
+  end
 
-// Asignación tipo RNM
+  // Asignación tipo RNM
+  assign rising_edge  = rising_edge_int;  
+  assign falling_edge = falling_edge_int;
 
-assign rising_edge = rising_edge_int;  
-assign falling_edge = falling_edge_int;
-endmdule
+endmodule
