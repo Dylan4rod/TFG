@@ -2,29 +2,32 @@ timescale Ins/1ps
 include "disciplines.h
 
 module detector_flancos_rnm(
-  input wreal a in, 
-  output wreal rising edge, 
-  output wreal falling edge
+  input wreal a_in, 
+  output wreal rising_edge, 
+  output wreal falling_edge
 );
 
-  real a prev;
-  real rising edge int; 
-  real falling edge int:
+  real a_prev;
+  real rising_edge_int; 
+  real falling_edge_int;
 
 // Logica de detección de flancos 
-always @la in) begin
-  if ((a prev 8.5) && (a in 0.5)) 
-    rising edge int 1.0:
-  else rising edge int 0.0;
+always @(a_in) begin
+  if ((a_prev < 0.5) && (a_in > 0.5)) 
+    rising_edge_int = 1.0:
+  else 
+    rising_edge_int = 0.0;
 
-  if (a prev 0.5) 64 (a in < 0.5)) 
-    falling edge int 1.8;
-  else falling edge int 0.0;
+  if (a_prev > 0.5) && (a_in < 0.5)) 
+    falling_edge_int = 1.0;
+  else 
+    falling_edge_int = 0.0;
 
-  a prev a in;
+  a_prev = a_in;
 end
+
 // Asignación tipo RNM
 
-assign rising edge assign falling edge rising edge int;
-falling edge int;
-endnodule
+assign rising_edge = rising_edge_int;  
+assign falling_edge = falling_edge_int;
+endmdule
