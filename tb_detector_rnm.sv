@@ -1,60 +1,43 @@
 `timescale 1ns/1ps
+`include "disciplines.vams"
 
-module tb_edge_detector_rnm;
+module tb_Detector;
 
-  // Señales
-  logic clk;
-  logic reset;
-  wreal a_i;
-  logic rising_edge_o;
-  logic falling_edge_o;
+  // Señales wreal (analógicas)
+  wreal a_in;
+  wreal rising_edge;
+  wreal falling_edge;
 
-  // Parámetros para la señal analógica
-  real time_step = 1.0;      // cada 1ns
-  real period = 20.0;        // periodo de la onda = 20ns
+  // Parámetros
   real amplitude = 1.0;
   real v_value = 0.0;
 
-  // Instanciación del DUT
-  edge_detector_rnm dut (
-    .a_i(a_i),
-    .clk(clk),
-    .reset(reset),
-    .rising_edge_o(rising_edge_o),
-    .falling_edge_o(falling_edge_o)
+  // Instancia del DUT
+  Detector dut (
+    .a_in(a_in),
+    .rising_edge(rising_edge),
+    .falling_edge(falling_edge)
   );
 
-  // Generador de reloj digital (10ns período)
-  always #5 clk = ~clk;
-
-  // Generador de señal analógica tipo onda cuadrada
+  // Estímulo tipo onda cuadrada usando 'real' en lugar de 'integer'
   initial begin
+    real i;  // Usamos 'real' en lugar de 'integer'
+    a_in = 0.0;
     v_value = 0.0;
-    forever begin
+
+    for (i = 0.0; i < 20.0; i = i + 1.0) begin  // Usamos 'real' en el bucle
       #10;
       v_value = (v_value == 0.0) ? amplitude : 0.0;
-      a_i = v_value;
+      a_in = v_value;
     end
+
+    #20 $finish;
   end
 
-  // Proceso principal de simulación
-  initial begin
-    // Inicialización
-    clk = 0;
-    reset = 1;
-    a_i = 0.0;
-
-    // Esperar un poco y liberar el reset
-    #15 reset = 0;
-
-    // Simular por 200ns
-    #200 $finish;
-  end
-
-  // Monitor para visualizar el comportamiento
-  always @(posedge clk) begin
-    $display("t=%0t | a_i=%.2f | rising=%b | falling=%b", 
-              $time, a_i, rising_edge_o, falling_edge_o);
+  // Monitor para ver las señales
+  always @(a_in) begin
+    $display("t=%0t | a_in=%.2f | rising=%.1f | falling=%.1f",
+              $realtime, a_in, rising_edge, falling_edge);
   end
 
 endmodule
