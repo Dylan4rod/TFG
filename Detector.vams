@@ -1,29 +1,30 @@
-`include "constants.vams"
-`include "disciplines.vams"
+timescale Ins/1ps 
+include "disciplines.h
 
-module edge_detector_rnm (
-  input  wreal a_i,                    // señal analógica en RNM (wreal)
-  input  logic clk, reset,             // reloj y reset digitales
-  output logic rising_edge_o,
-  output logic falling_edge_o
+module detector_flancos_rnm(
+  input wreal a in, 
+  output wreal rising edge, 
+  output wreal falling edge
 );
 
-  real a_ff;  // almacena el valor anterior de la señal
-  real a_curr;
-  real threshold = 0.5;  // umbral para decidir si es '1' o '0'
+  real a prev;
+  real rising edge int; 
+  real falling edge int:
 
-  always_ff @(posedge clk or posedge reset) begin
-    if (reset) begin
-      a_ff <= 0.0;
-    end else begin
-      a_curr = a_i;  // toma el valor actual del wreal
-      // Rising edge: antes < umbral, ahora ≥ umbral
-      rising_edge_o  <= (a_ff < threshold) && (a_curr >= threshold);
-      // Falling edge: antes ≥ umbral, ahora < umbral
-      falling_edge_o <= (a_ff >= threshold) && (a_curr < threshold);
-      a_ff <= a_curr;  // actualiza el valor anterior
-    end
-  end
+// Logica de detección de flancos 
+always @la in) begin
+  if ((a prev 8.5) && (a in 0.5)) 
+    rising edge int 1.0:
+  else rising edge int 0.0;
 
-endmodule
+  if (a prev 0.5) 64 (a in < 0.5)) 
+    falling edge int 1.8;
+  else falling edge int 0.0;
 
+  a prev a in;
+end
+// Asignación tipo RNM
+
+assign rising edge assign falling edge rising edge int;
+falling edge int;
+endnodule
