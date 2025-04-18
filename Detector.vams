@@ -2,7 +2,7 @@ timescale Ins/1ps
 include "disciplines.h
 
 module detector_flancos_rnm(
-  input wreal a_in, 
+  input  wreal a_in, 
   output wreal rising_edge, 
   output wreal falling_edge
 );
@@ -18,7 +18,7 @@ always @(a_in) begin
   else 
     rising_edge_int = 0.0;
 
-  if (a_prev > 0.5) && (a_in < 0.5)) 
+  if ((a_prev > 0.5) && (a_in < 0.5)) 
     falling_edge_int = 1.0;
   else 
     falling_edge_int = 0.0;
