@@ -1,4 +1,4 @@
-timescale Ins/1ps 
+timescale 1ns/1ps 
 include "disciplines.h
 
 module detector_flancos_rnm(
