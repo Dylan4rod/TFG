@@ -13,22 +13,23 @@ module tb_Detector;
   real v_value = 0.0;
   integer i;
 
+  // Asignación directa RNM
+  assign a_in = v_value;
+
   // Instancia del DUT
-  Detector dut (
+  detector_flancos_rnm dut (
     .a_in(a_in),
     .rising_edge(rising_edge),
     .falling_edge(falling_edge)
   );
 
-  // Estímulo digital sobre wreal usando assign_wreal
+  // Estímulo digital sobre wreal
   initial begin
     v_value = 0.0;
-    assign_wreal(a_in, v_value);
 
     for (i = 0; i < 20; i = i + 1) begin
       #10;
       v_value = (v_value == 0.0) ? amplitude : 0.0;
-      assign_wreal(a_in, v_value);
     end
 
     #20 $finish;
