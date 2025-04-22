@@ -1,0 +1,16 @@
+`include "disciplines.vams"
+
+module monitor(input wreal a_in, input wreal rising, input wreal falling, output mailbox mb);
+  real in_val, rise_val, fall_val;
+
+  analog begin
+    forever begin
+      in_val = a_in;
+      rise_val = rising;
+      fall_val = falling;
+      mb.put({in_val, rise_val, fall_val});
+      #10;
+    end
+  end
+
+endmodule
