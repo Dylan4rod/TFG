@@ -1,41 +1,31 @@
-module test;
+`timescale 1ns/1ps
+`include "disciplines.vams"
 
-  import "DPI-C" function void assign_wreal(input wreal net, input real value);
+module tb_detector;
 
-  // Mailboxes
-  mailbox gen2drv = new();
-  mailbox mon2chk = new();
-  mailbox chk2sb  = new();
-  mailbox test2sb = new();
+  // Declaración de los mailboxes
+  mailbox gen2drv, drv2dut, dut2mon, mon2chk, chk2sb;
 
-  // Señales RNM
-  wreal a_in;
-  wreal rising_edge;
-  wreal falling_edge;
+  // Instancias de los módulos
+  generator gen_inst(gen2drv);
+  agent agent_inst(gen2drv, drv2dut, dut2mon, mon2chk);
+  driver drv_inst(drv2dut, gen2drv);
+  monitor mon_inst(dut2mon, mon2chk);
+  checker chk_inst(mon2chk, chk2sb);
+  scoreboard sb_inst(chk2sb);
 
-  // DUT
-  detector_flancos_rnm dut (
-    .a_in(a_in),
-    .rising_edge(rising_edge),
-    .falling_edge(falling_edge)
-  );
-
-  // Instancias
-  agente a (.gen2drv(gen2drv));
-  driver d (.a_in(a_in), .mb(gen2drv));
-  monitor m (.a_in(a_in), .rising(rising_edge), .falling(falling_edge), .mb(mon2chk));
-  checker c (.mb_in(mon2chk), .mb_out(chk2sb));
-  scoreboard sb (.test2sb(test2sb), .checker2sb(chk2sb));
-
-  // Estímulo desde el test
+  // Inicialización del simulador
   initial begin
-    for (int i = 0; i < 20; i++) begin
-      real value = (i % 2 == 0) ? 1.0 : 0.0;
-      test2sb.put(value);
-      gen2drv.put(value);
-      #10;
-    end
-    #50 $finish;
+    // Crear los mailboxes
+    gen2drv = new();
+    drv2dut = new();
+    dut2mon = new();
+    mon2chk = new();
+    chk2sb = new();
+
+    // Simulación
+    $display("Iniciando simulación...");
+    #100 $finish;
   end
 
 endmodule
