@@ -1,0 +1,48 @@
+`timescale 1ns/1ps
+`include "disciplines.vams"
+
+module detector_flancos_rnm (
+  input  wreal a_in, 
+  output wreal rising_edge, 
+  output wreal falling_edge,
+  output wreal freq_out // nueva salida: frecuencia en Hz
+);
+
+  real a_prev;
+  real rising_edge_int; 
+  real falling_edge_int;
+
+  real t_prev = 0.0;
+  real t_now = 0.0;
+  real freq_val = 0.0;
+
+  // Detección de flancos y cálculo de frecuencia
+  always @(a_in) begin
+    // Rising edge
+    if ((a_prev < 0.5) && (a_in > 0.5)) begin
+      rising_edge_int = 1.0;
+
+      t_now = $realtime;
+      if (t_prev > 0.0) begin
+        freq_val = 1e9 / (t_now - t_prev);  // ns → Hz
+      end
+      t_prev = t_now;
+    end else begin
+      rising_edge_int = 0.0;
+    end
+
+    // Falling edge
+    if ((a_prev > 0.5) && (a_in < 0.5)) 
+      falling_edge_int = 1.0;
+    else 
+      falling_edge_int = 0.0;
+
+    a_prev = a_in;
+  end
+
+  // Asignaciones a salidas tipo RNM
+  assign rising_edge  = rising_edge_int;  
+  assign falling_edge = falling_edge_int;
+  assign freq_out     = freq_val;
+
+endmodule
