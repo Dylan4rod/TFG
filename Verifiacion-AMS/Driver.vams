@@ -1,0 +1,15 @@
+`include "disciplines.vams"
+
+module driver(output wreal a_in, input mailbox mb);
+  real stim;
+
+  analog begin
+    @(initial_step) a_in = 0.0;
+    forever begin
+      mb.get(stim);
+      a_in = stim;
+      #10;
+    end
+  end
+
+endmodule
