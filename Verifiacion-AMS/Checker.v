@@ -1,20 +1,31 @@
-module checker(input mailbox mb_in, output mailbox mb_out);
+`timescale 1ns/1ps
 
-  typedef struct {
-    real in_val;
-    real rising;
-    real falling;
-  } data_t;
+module checker(input mailbox mon2chk,    // Del monitor al checker
+               input mailbox chk2sb);    // Del checker al scoreboard
 
-  data_t d;
+  real signal_rising, signal_falling;
+  real expected_rising = 1.0;
+  real expected_falling = 1.0;
 
-  always begin
-    mb_in.get(d);
+  always @(mon2chk) begin
+    mon2chk.get(signal_rising);
+    mon2chk.get(signal_falling);
 
-    real expected_rise = (d.in_val > 0.5) ? 1.0 : 0.0;
-    real expected_fall = (d.in_val < 0.5) ? 1.0 : 0.0;
+    // Compara las señales con los resultados esperados
+    if (signal_rising == expected_rising) 
+      $display("Rising edge detected correctly.");
+    else 
+      $display("Error en rising edge.");
 
-    mb_out.put({expected_rise, expected_fall});
+    if (signal_falling == expected_falling) 
+      $display("Falling edge detected correctly.");
+    else 
+      $display("Error en falling edge.");
+      
+    // Pasa los resultados al scoreboard
+    chk2sb.put(signal_rising);
+    chk2sb.put(signal_falling);
   end
 
 endmodule
+
