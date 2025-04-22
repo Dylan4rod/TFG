@@ -1,16 +1,19 @@
-`include "disciplines.vams"
+`timescale 1ns/1ps
 
-module monitor(input wreal a_in, input wreal rising, input wreal falling, output mailbox mb);
-  real in_val, rise_val, fall_val;
+module monitor(input wreal rising_edge, falling_edge,  // Salidas del DUT
+               input mailbox dut2mon,                 // De DUT al monitor
+               input mailbox mon2chk);                // Del monitor al checker
 
-  analog begin
-    forever begin
-      in_val = a_in;
-      rise_val = rising;
-      fall_val = falling;
-      mb.put({in_val, rise_val, fall_val});
-      #10;
-    end
+  real signal_rising, signal_falling;
+
+  always @(rising_edge or falling_edge) begin
+    signal_rising = rising_edge;
+    signal_falling = falling_edge;
+
+    // Pasa las señales al checker
+    mon2chk.put(signal_rising);
+    mon2chk.put(signal_falling);
   end
 
 endmodule
+
