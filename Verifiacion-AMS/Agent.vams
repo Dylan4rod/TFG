@@ -1,0 +1,28 @@
+`timescale 1ns/1ps
+
+module agent(input mailbox gen2drv,   // Del generador al driver
+             input mailbox drv2dut,   // Del driver al DUT
+             input mailbox dut2mon,   // Del DUT al monitor
+             input mailbox mon2chk);  // Del monitor al checker
+
+  // Variables de control
+  real data_to_driver;
+  real data_from_dut;
+  real data_from_monitor;
+
+  // El agente estará constantemente revisando los mensajes y enviando al driver
+  initial begin
+    forever begin
+      // Recibir datos del generador (real) y enviarlos al driver
+      gen2drv.get(data_to_driver);  // Recibe datos del generador
+      drv2dut.put(data_to_driver);  // Envía datos al driver
+    end
+  end
+
+  // El agente también gestionará los resultados del DUT y los pasará al monitor
+  always @(dut2mon) begin
+    dut2mon.get(data_from_dut);  // Recibe datos del DUT
+    mon2chk.put(data_from_dut);  // Envía datos al checker para validación
+  end
+
+endmodule
