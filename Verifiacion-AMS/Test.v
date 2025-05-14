@@ -1,4 +1,10 @@
 `timescale 1ns/1ps
+`include "generator.vams"
+`include "driver.vams"
+`include "monitor.vams"
+`include "checker.vams"
+`include "scoreboard.vams"
+`include "agent.vams"
 `include "disciplines.vams"
 
 module tb_detector;
