@@ -1,34 +1,23 @@
-`timescale 1ns/1ps
+module generator(mailbox gen2drv);
 
-module generator(input mailbox gen2drv);
-
-  typedef enum {FREQ_LOW, FREQ_MEDIUM, FREQ_HIGH} freq_case_t;
-
-  real period;
+  wreal signal;
   real amplitude = 1.0;
-  int cycles = 10;
+  real v_value = 0.0;
+  integer i;
 
-  task generate_square_wave(freq_case_t freq_level);
-    case (freq_level)
-      FREQ_LOW:    period = 100.0; // 100ns => 10 MHz
-      FREQ_MEDIUM: period = 50.0;  // 50ns  => 20 MHz
-      FREQ_HIGH:   period = 20.0;  // 20ns  => 50 MHz
-    endcase
-
-    for (int i = 0; i < cycles; i++) begin
-      gen2drv.put(amplitude);
-      #(period/2);
-      gen2drv.put(0.0);
-      #(period/2);
-    end
-  endtask
-
+  // Generación de señal cuadrada
   initial begin
-    generate_square_wave(FREQ_LOW);
-    generate_square_wave(FREQ_MEDIUM);
-    generate_square_wave(FREQ_HIGH);
-    $display("[GENERATOR] Finalizó generación de estímulos.");
+    v_value = 0.0;
+    assign_wreal(signal, v_value);
+
+    for (i = 0; i < 20; i = i + 1) begin
+      #10;
+      v_value = (v_value == 0.0) ? amplitude : 0.0;
+      assign_wreal(signal, v_value);
+      gen2drv.put(signal); // Enviar señal al driver
+    end
   end
 
 endmodule
+
 
