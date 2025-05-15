@@ -1,0 +1,14 @@
+`timescale 1ns/1ps
+`include "disciplines.vams"
+
+module environment();
+  wreal gen2drv, drv2dut, rising_edge, falling_edge, freq_out, mon2chk, chk2sb;
+
+  generator       u_gen      (.gen2drv(gen2drv));
+  driver          u_drv      (.gen2drv(gen2drv), .drv2dut(drv2dut));
+  detector_flancos_rnm u_dut (.a_in(drv2dut), .rising_edge(rising_edge),
+                              .falling_edge(falling_edge), .freq_out(freq_out));
+  monitor         u_mon      (.freq_out(freq_out), .mon2chk(mon2chk));
+  checker         u_chk      (.mon2chk(mon2chk), .chk2sb(chk2sb));
+  scoreboard      u_sb       (.chk2sb(chk2sb));
+endmodule

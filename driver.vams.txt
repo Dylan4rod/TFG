@@ -1,0 +1,8 @@
+`timescale 1ns/1ps
+`include "disciplines.vams"
+
+module driver(input wreal gen2drv, output wreal drv2dut);
+  always @(gen2drv) begin
+    assign_wreal(drv2dut, gen2drv); // Pasa el valor directo
+  end
+endmodule

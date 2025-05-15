@@ -1,0 +1,11 @@
+`timescale 1ns/1ps
+`include "disciplines.vams"
+
+module monitor(
+  input wreal freq_out,
+  output wreal mon2chk
+);
+  always @(freq_out) begin
+    assign_wreal(mon2chk, freq_out); // Pasa directo la frecuencia detectada
+  end
+endmodule

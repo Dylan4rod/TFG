@@ -1,0 +1,11 @@
+`timescale 1ns/1ps
+`include "disciplines.vams"
+
+module scoreboard(input wreal chk2sb);
+  always @(chk2sb) begin
+    if (chk2sb == 1.0)
+      $display("SCOREBOARD: TEST PASSED at %0t", $realtime);
+    else
+      $display("SCOREBOARD: TEST FAILED at %0t", $realtime);
+  end
+endmodule

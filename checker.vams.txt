@@ -1,0 +1,18 @@
+`timescale 1ns/1ps
+`include "disciplines.vams"
+
+module checker(
+  input wreal mon2chk,
+  output wreal chk2sb
+);
+  real ref_freq = 50.0; // ejemplo, referencia esperada
+  real result;
+  always @(mon2chk) begin
+    // Ejemplo simple: 1 si la frecuencia es cercana, 0 si no
+    if ((mon2chk > ref_freq - 2) && (mon2chk < ref_freq + 2))
+      result = 1.0;
+    else
+      result = 0.0;
+    assign_wreal(chk2sb, result);
+  end
+endmodule

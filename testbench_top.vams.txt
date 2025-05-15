@@ -1,0 +1,11 @@
+`timescale 1ns/1ps
+`include "disciplines.vams"
+
+module testbench_top();
+  environment env();
+
+  initial begin
+    $display("== Simulación iniciada ==");
+    #250 $finish;
+  end
+endmodule

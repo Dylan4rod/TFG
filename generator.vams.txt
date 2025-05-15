@@ -1,0 +1,15 @@
+`timescale 1ns/1ps
+`include "disciplines.vams"
+
+module generator(output wreal gen2drv);
+  real value = 0.0;
+  integer i;
+
+  initial begin
+    for (i = 0; i < 20; i = i + 1) begin
+      #10;
+      value = (value == 0.0) ? 1.0 : 0.0;
+      assign_wreal(gen2drv, value);
+    end
+  end
+endmodule
